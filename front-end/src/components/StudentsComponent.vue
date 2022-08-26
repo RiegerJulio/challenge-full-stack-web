@@ -165,51 +165,55 @@
   import Students from '../services/students'
 
   export default {
-    data: () => ({
-      search: '',
-      dialog: false,
-      dialogDelete: false,
-      valid: true,
-      headers: [
-        { text: 'Registro Acadêmico', align: 'start', sortable: true, value: 'ra' },
-        { text: 'Nome', sortable: true, value: 'name' },
-        { text: 'E-mail', sortable: true, value: 'email'  },
-        { text: 'CPF', sortable: true, value: 'cpf'  },
-        { text: 'Ações', sortable: true, value: 'actions'  },
-      ],
-      students: [],
-      editedIndex: -1,
-      editedItem: {
-        name: '',
-        email: '',
-        ra: '',
-        cpf: '',
-      },
-      defaultItem: {
-        name: '',
-        email: '',
-        ra: '',
-        cpf: '',
-      },
-      nameRules: [
-        v => !!v || 'Nome é obrigatório',
-        v => /^[a-zA-Z ]+$/.test(v) || 'Nome deve conter apenas letras',
-      ],
-      emailRules: [
-        v => !!v || 'E-mail é obrigatório',
-        v => /.+@.+\..+/.test(v) || 'E-mail deve ser válido',
-      ],
-      raRules: [
-        v => /^\d+$/.test(v) || 'RA deve conter apenas números',
-        v => !!v || 'RA é obrigatório',
-        v => (v && v.length === 6) || 'RA deve ter 6 caracteres',
-      ],
-      cpfRules: [
-        v => /^\d+$/.test(v) || 'CPF deve conter apenas números',
-        v => !!v || 'CPF é obrigatório',
-        v => (v && v.length === 11) || 'CPF deve ter 11 caracteres',
-      ],
-    }),
+    data() {
+      return {
+        search: '',
+        dialog: false,
+        dialogDelete: false,
+        valid: true,
+        reload: 0,
+        headers: [
+          { text: 'Registro Acadêmico', align: 'start', sortable: true, value: 'ra' },
+          { text: 'Nome', sortable: true, value: 'name' },
+          { text: 'E-mail', sortable: true, value: 'email'  },
+          { text: 'CPF', sortable: true, value: 'cpf'  },
+          { text: 'Ações', sortable: true, value: 'actions'  },
+        ],
+        students: [],
+        editedIndex: -1,
+        editedItem: {
+          name: '',
+          email: '',
+          ra: '',
+          cpf: '',
+        },
+        defaultItem: {
+          name: '',
+          email: '',
+          ra: '',
+          cpf: '',
+        },
+        nameRules: [
+          v => !!v || 'Nome é obrigatório',
+          v => /^[a-zA-Z ]+$/.test(v) || 'Nome deve conter apenas letras',
+        ],
+        emailRules: [
+          v => !!v || 'E-mail é obrigatório',
+          v => /.+@.+\..+/.test(v) || 'E-mail deve ser válido',
+        ],
+        raRules: [
+          v => /^\d+$/.test(v) || 'RA deve conter apenas números',
+          v => !!v || 'RA é obrigatório',
+          v => (v && v.length === 6) || 'RA deve ter 6 caracteres',
+          v => !this.students.some(student => student.ra === v) || 'RA já cadastrado',
+        ],
+        cpfRules: [
+          v => /^\d+$/.test(v) || 'CPF deve conter apenas números',
+          v => !!v || 'CPF é obrigatório',
+          v => (v && v.length === 11) || 'CPF deve ter 11 caracteres',
+        ],
+      }
+    },
 
     computed: {
       formTitle () {
@@ -246,6 +250,8 @@
         this.editedIndex = this.students.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
+        this.raRules.pop()
+        this.valid = true
       },
 
       deleteItem (item) {
@@ -285,20 +291,14 @@
             Students.putStudent(where, where.ra).then(() => {
               Object.assign(student, where);
               this.close();
+              this.raRules.push(v => !this.students.some(student => student.ra === v) || 'RA já cadastrado',);
             });
           } else {
             const editedItem = this.editedItem;
-            // this.checkRaExistance(editedItem.ra)
-            const checkRaExistance = this.students.find(student => student.ra === this.editedItem.ra)
-            if (checkRaExistance) {
-              this.valid = false
-              console.log('RA já cadastrado')
-            } else {
-              Students.postStudent(editedItem).then(() => {
-                this.students.push(editedItem);
-                this.close()
-             });
-            }
+            Students.postStudent(editedItem).then(() => {
+              this.students.push(editedItem);
+              this.close()
+            });
           }
         }
       },
