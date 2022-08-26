@@ -4,6 +4,7 @@
     :items="students"
     sort-by="ra"
     class="elevation-1"
+    :search="search"
   >
     <template v-slot:top>
       <v-toolbar
@@ -38,50 +39,60 @@
 
             <v-card-text>
               <v-container>
-                <v-row>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.name"
-                      label="Nome"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.email"
-                      label="Email"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.ra"
-                      label="Registro Acadêmico"
-                      :disabled="isEditing"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.cpf"
-                      label="CPF"
-                      :disabled="isEditing"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
+                <v-form
+                  ref="form"
+                  v-model="valid"
+                  lazy-validation
+                >
+                  <v-row>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="editedItem.name"
+                        label="Nome"
+                        :rules="nameRules"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="editedItem.email"
+                        label="Email"
+                        :rules="emailRules"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="editedItem.ra"
+                        label="Registro Acadêmico"
+                        :disabled="isEditing"
+                        :rules="raRules"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="editedItem.cpf"
+                        label="CPF"
+                        :disabled="isEditing"
+                        :rules="cpfRules"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-form>
               </v-container>
             </v-card-text>
 
@@ -98,6 +109,7 @@
                 color="blue darken-1"
                 text
                 @click="save"
+                :disabled="!valid"
               >
                 Salvar
               </v-btn>
@@ -116,6 +128,11 @@
           </v-card>
         </v-dialog>
       </v-toolbar>
+      <v-text-field
+          v-model="search"
+          label="Digite sua busca"
+          class="mx-4"
+      ></v-text-field>
     </template>
     <template v-slot:item.actions="{ item }">
       <v-icon
@@ -149,8 +166,10 @@
 
   export default {
     data: () => ({
+      search: '',
       dialog: false,
       dialogDelete: false,
+      valid: true,
       headers: [
         { text: 'Registro Acadêmico', align: 'start', sortable: true, value: 'ra' },
         { text: 'Nome', sortable: true, value: 'name' },
@@ -172,6 +191,24 @@
         ra: '',
         cpf: '',
       },
+      nameRules: [
+        v => !!v || 'Nome é obrigatório',
+        v => /^[a-zA-Z ]+$/.test(v) || 'Nome deve conter apenas letras',
+      ],
+      emailRules: [
+        v => !!v || 'E-mail é obrigatório',
+        v => /.+@.+\..+/.test(v) || 'E-mail deve ser válido',
+      ],
+      raRules: [
+        v => /^\d+$/.test(v) || 'RA deve conter apenas números',
+        v => !!v || 'RA é obrigatório',
+        v => (v && v.length === 6) || 'RA deve ter 6 caracteres',
+      ],
+      cpfRules: [
+        v => /^\d+$/.test(v) || 'CPF deve conter apenas números',
+        v => !!v || 'CPF é obrigatório',
+        v => (v && v.length === 11) || 'CPF deve ter 11 caracteres',
+      ],
     }),
 
     computed: {
@@ -195,21 +232,14 @@
 
     created () {
       this.initialize()
-
-      Students.getStudents().then(response => {
-        console.log(response.data)
-      })
     },
 
     methods: {
+
       initialize () {
-        this.students = [
-          { ra: 'teste1', name: 'nome aleatorio', email:"teste@teste.com", cpf: '12312312312', actions: 'edit / delete' },
-          { ra: 'teste1', name: 'nome aleatorio', email:"teste@teste.com", cpf: '12312312312', actions: 'edit / delete' },
-          { ra: 'teste1', name: 'nome aleatorio', email:"teste@teste.com", cpf: '12312312312', actions: 'edit / delete' },
-          { ra: 'teste1', name: 'nome aleatorio', email:"teste@teste.com", cpf: '12312312312', actions: 'edit / delete' },
-          { ra: 'teste1', name: 'nome aleatorio', email:"teste@teste.com", cpf: '12312312312', actions: 'edit / delete' },
-        ]
+        Students.getStudents().then(response => {
+          this.students = response.data
+        })
       },
 
       editItem (item) {
@@ -225,8 +255,10 @@
       },
 
       deleteItemConfirm () {
-        this.students.splice(this.editedIndex, 1)
-        this.closeDelete()
+        Students.deleteStudent(this.editedItem.ra).then(() => {
+          this.students.splice(this.editedIndex, 1)
+          this.closeDelete()
+        });
       },
 
       close () {
@@ -246,12 +278,29 @@
       },
 
       save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.students[this.editedIndex], this.editedItem)
-        } else {
-          this.students.push(this.editedItem)
+        if (this.$refs.form.validate()) {
+          if (this.editedIndex > -1) {
+            const student = this.students[this.editedIndex]
+            const where = this.editedItem;
+            Students.putStudent(where, where.ra).then(() => {
+              Object.assign(student, where);
+              this.close();
+            });
+          } else {
+            const editedItem = this.editedItem;
+            // this.checkRaExistance(editedItem.ra)
+            const checkRaExistance = this.students.find(student => student.ra === this.editedItem.ra)
+            if (checkRaExistance) {
+              this.valid = false
+              console.log('RA já cadastrado')
+            } else {
+              Students.postStudent(editedItem).then(() => {
+                this.students.push(editedItem);
+                this.close()
+             });
+            }
+          }
         }
-        this.close()
       },
     },
   }
