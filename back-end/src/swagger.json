@@ -1,0 +1,11 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "+A Educação - API",
+    "description": "API para integração com o sistema +A Educação",
+    "version": "1.0.0",
+    "contact": {
+      "email": "riegerproducoes@gmail.com"
+    }
+  }
+}
