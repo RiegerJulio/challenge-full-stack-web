@@ -28,6 +28,7 @@ studentRoutes.put(
   StudentMiddlewares.nameValidate,
   StudentMiddlewares.emailValidate,
   StudentMiddlewares.raValidateParams,
+  StudentMiddlewares.cpfValidate,
   (req, res) => {
     return UpdateStudentController().handle(req, res);
 })

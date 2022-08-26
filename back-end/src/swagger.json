@@ -171,6 +171,178 @@
           }
         }
       }
+    },
+    "/students/{ra}": {
+      "put": {
+        "tags": ["Students"],
+        "summary": "Update a student",
+        "description": "Update a student in db. All fields must be filled like the example. CPF must have 11 digits and RA must have 6 digits and must be passed in parameters",
+        "operationId": "updateStudent",
+        "parameters": [
+          {
+            "name": "ra",
+            "in": "path",
+            "description": "RA of the student",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "ra": {
+                    "type": "string"
+                  },
+                  "cpf": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "name": "John Doe",
+                  "email": "john@doe.com",
+                  "ra": "123456",
+                  "cpf": "12345678901"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "ra": {
+                      "type": "string"
+                    },
+                    "cpf": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "name": "John Doe",
+                    "email": "john@doe.com",
+                    "ra": "123456",
+                    "cpf": "12345678901"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Invalid data"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Student doesn't exists"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Students"],
+        "summary": "Delete a student",
+        "description": "Delete a student in db. you must provide a valid 6 digits RA",
+        "operationId": "deleteStudent",
+        "parameters": [
+          {
+            "name": "ra",
+            "in": "path",
+            "description": "RA of the student",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "123456"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Student deleted"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Student doesn't exists"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
