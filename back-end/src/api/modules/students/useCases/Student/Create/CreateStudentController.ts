@@ -16,7 +16,7 @@ export default class CreateStudentController {
   
       return res.status(201).json({ message: "User created with success"});
     } catch (error) {
-      return res.status(404).json({ message: "User already Exists"});
+      return res.status(404).json({ message: "Student already Exists"});
     }
   };
 }

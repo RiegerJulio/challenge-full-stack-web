@@ -9,7 +9,7 @@ export default class ReadStudentController {
       const read = await this.readStudentUseCase.execute();
       return res.status(200).json(read);
     } catch (error) {
-      return res.status(404).json({ message: "Something went wrong" })
+      return res.status(500).json({ message: "Something went wrong" })
     }
   };
 }
