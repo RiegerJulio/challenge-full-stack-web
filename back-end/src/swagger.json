@@ -2,10 +2,72 @@
   "openapi": "3.0.0",
   "info": {
     "title": "+A Educação - API",
-    "description": "API para integração com o sistema +A Educação",
+    "description": "API to integrate with +A Educação system",
     "version": "1.0.0",
     "contact": {
       "email": "riegerproducoes@gmail.com"
+    }
+  },
+  "paths": {
+    "/students": {
+      "get": {
+        "tags": ["Students"],
+        "summary": "Get all students",
+        "description": "Get all students in db",
+        "operationId": "getStudents",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "ra": {
+                      "type": "string"
+                    },
+                    "cpf": {
+                      "type": "string"
+                    }
+                  },
+                  "example": [
+                    {
+                      "name": "John Doe",
+                      "email": "john@doe.com",
+                      "ra": "123456",
+                      "cpf": "12345678901"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Something went wrong"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
