@@ -67,6 +67,109 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": ["Students"],
+        "summary": "Create a new student",
+        "description": "Create a new student in db. All fields must be filled like the example. CPF must have 11 digits and RA must have 6 digits",
+        "operationId": "createStudent",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "ra": {
+                    "type": "string"
+                  },
+                  "cpf": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "name": "John Doe",
+                  "email": "john@doe.com",
+                  "ra": "123456",
+                  "cpf": "12345678901"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "ra": {
+                      "type": "string"
+                    },
+                    "cpf": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "name": "John Doe",
+                    "email": "john@doe.com",
+                    "ra": "123456",
+                    "cpf": "12345678901"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Invalid data"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Student already exists"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
