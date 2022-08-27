@@ -1,8 +1,10 @@
 import StudentRepositoryInMemory from '../../../repositories/in-memory/StudentRepositoryInMemory';
-import ReadStudentUseCase from './CreateStudentUseCase';
+import ReadStudentUseCase from './ReadStudentUseCase';
+import CreateStudentUseCase from '../Create/CreateStudentUseCase';
 
 let readStudentUseCase: ReadStudentUseCase;
 let studentRepositoryInMemory: StudentRepositoryInMemory;
+let createStudentUseCase: CreateStudentUseCase;
 
 const student = {
   name: "John Doe",
@@ -13,21 +15,27 @@ const student = {
 
 describe("Create Student", () => {
   beforeEach(() => {
-    sudentRepositoryInMemory = new StudentRepositoryInMemory();
-    createStudentUseCase = new CreateStudentUseCase(sudentRepositoryInMemory);
+    studentRepositoryInMemory = new StudentRepositoryInMemory();
+    readStudentUseCase = new ReadStudentUseCase(studentRepositoryInMemory);
+    createStudentUseCase = new CreateStudentUseCase(studentRepositoryInMemory);
   });
-  it("should be able to create a new student", async () => {
-
+  it("should be able to read all students", async () => {
+      
     await createStudentUseCase.execute(student);
+  
+    const students = await readStudentUseCase.execute();
+  
+    expect(students).toHaveLength(1);
+    expect(students).toBeInstanceOf(Array);
 
-    const studentCreated = await sudentRepositoryInMemory.findByRa(student.ra);
-
-    expect(studentCreated).toHaveProperty("ra");
   });
 
-  it("should not be able to create a new student with same ra", async () => {
-    await createStudentUseCase.execute(student);
-
-    await expect(createStudentUseCase.execute(student)).rejects.toEqual(new Error("Student already exists"));
+  it("should be able to return an empty array if there are no students", async () => {
+    
+    const students = await readStudentUseCase.execute();
+    
+    expect(students).toHaveLength(0);
+    
+    expect(students).toBeInstanceOf(Array);
   });
 });
