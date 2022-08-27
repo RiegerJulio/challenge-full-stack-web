@@ -1,11 +1,9 @@
 import StudentRepositoryInMemory from '../../../repositories/in-memory/StudentRepositoryInMemory';
-import ReadStudentUseCase from '../List/ReadStudentUseCase';
 import CreateStudentUseCase from '../Create/CreateStudentUseCase';
 import UpdateStudentUseCase from './UpdateStudentUseCase';
 
 let studentRepositoryInMemory: StudentRepositoryInMemory;
 let createStudentUseCase: CreateStudentUseCase;
-let readStudentUseCase: ReadStudentUseCase;
 let updateStudentUseCase: UpdateStudentUseCase;
 
 const student = {
@@ -33,7 +31,6 @@ describe("Update Student", () => {
   beforeEach(() => {
     studentRepositoryInMemory = new StudentRepositoryInMemory();
     createStudentUseCase = new CreateStudentUseCase(studentRepositoryInMemory);
-    readStudentUseCase = new ReadStudentUseCase(studentRepositoryInMemory);
     updateStudentUseCase = new UpdateStudentUseCase(studentRepositoryInMemory);
   });
   
