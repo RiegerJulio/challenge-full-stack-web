@@ -13,7 +13,7 @@ const student = {
   ra: "123456",
 }
 
-describe("Create Student", () => {
+describe("Read Students", () => {
   beforeEach(() => {
     studentRepositoryInMemory = new StudentRepositoryInMemory();
     readStudentUseCase = new ReadStudentUseCase(studentRepositoryInMemory);
