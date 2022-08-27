@@ -1,7 +1,7 @@
 import StudentRepositoryInMemory from '../../../repositories/in-memory/StudentRepositoryInMemory';
-import CreateStudentUseCase from './CreateStudentUseCase';
+import ReadStudentUseCase from './CreateStudentUseCase';
 
-let createStudentUseCase: CreateStudentUseCase;
+let readStudentUseCase: ReadStudentUseCase;
 let studentRepositoryInMemory: StudentRepositoryInMemory;
 
 const student = {
@@ -13,14 +13,14 @@ const student = {
 
 describe("Create Student", () => {
   beforeEach(() => {
-    studentRepositoryInMemory = new StudentRepositoryInMemory();
-    createStudentUseCase = new CreateStudentUseCase(studentRepositoryInMemory);
+    sudentRepositoryInMemory = new StudentRepositoryInMemory();
+    createStudentUseCase = new CreateStudentUseCase(sudentRepositoryInMemory);
   });
   it("should be able to create a new student", async () => {
 
     await createStudentUseCase.execute(student);
 
-    const studentCreated = await studentRepositoryInMemory.findByRa(student.ra);
+    const studentCreated = await sudentRepositoryInMemory.findByRa(student.ra);
 
     expect(studentCreated).toHaveProperty("ra");
   });
